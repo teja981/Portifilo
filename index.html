@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teja Deep // Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0403;
+      --bg-2: #140705;
+      --cyan: #ff3b3f;
+      --cyan-dim: #b91c1c;
+      --purple: #ff8a3d;
+      --purple-dim: #c2410c;
+      --red: #ff3b3f;
+      --amber: #ff8a3d;
+      --text: #fdf0ec;
+      --muted: #a68a84;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-hi: rgba(255, 59, 63, 0.18);
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    ::selection {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    /* ===== canvas bg ===== */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 50% 0%, #23090a 0%, #0a0403 60%);
+      opacity: 0;
+      transition: opacity 1.4s ease;
+    }
+
+    #bg-canvas.active {
+      opacity: 1;
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ===== custom cursor ===== */
+    .cursor-dot,
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan), 0 0 16px var(--cyan);
+    }
+
+    .cursor-ring {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(46, 230, 255, 0.5);
+      transition: width .25s ease, height .25s ease, border-color .25s ease, background .25s ease;
+    }
+
+    .cursor-ring.hover {
+      width: 64px;
+      height: 64px;
+      background: rgba(168, 85, 247, 0.08);
+      border-color: var(--purple);
+    }
+
+    @media (hover:none) {
+
+      .cursor-dot,
+      .cursor-ring {
+        display: none;
+      }
+
+      body {
+        cursor: auto;
+      }
+    }
+
+    /* ===== layout shells ===== */
+    main {
+      position: relative;
+      z-index: 2;
+    }
+
+    section {
+      position: relative;
+      padding: 140px 8vw;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 26px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), transparent);
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* ===== glass utility ===== */
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border-radius: 18px;
+    }
+
+    /* ===== nav ===== */
+    nav {
+      position: fixed;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: rgba(10, 14, 26, 0.55);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .logo span {
+      color: var(--cyan);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 28px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.02em;
+      transition: color .25s ease;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 1px;
+      background: var(--cyan);
+      transition: width .25s ease;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* ===== hero ===== */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 0;
+      overflow: hidden;
+    }
+
+    .hero-video-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .hero-video-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+    }
+
+    .hero-video-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 4, 3, 0) 78%, rgba(10, 4, 3, 0.85) 100%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: none;
+    }
+
+    .grad {
+      background: linear-gradient(100deg, var(--cyan) 10%, var(--purple) 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      padding: 15px 30px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s ease, background .3s ease;
+    }
+
+    .btn-solid {
+      background: linear-gradient(100deg, var(--cyan), var(--purple));
+      color: #04070d;
+      font-weight: 600;
+    }
+
+    .btn-solid:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px -10px rgba(255, 59, 63, 0.45);
+    }
+
+    .btn-ghost {
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+    }
+
+    .btn-ghost:hover {
+      transform: translateY(-3px);
+      border-color: var(--cyan);
+      background: rgba(255, 59, 63, 0.06);
+    }
+
+    .dot-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    /* ===== hero CTA (over intro video) ===== */
+    .hero-cta {
+      position: absolute;
+      left: 50%;
+      bottom: 108px;
+      transform: translate(-50%, 26px);
+      z-index: 6;
+      display: flex;
+      gap: 16px;
+      opacity: 0;
+      transition: opacity .9s cubic-bezier(.2, .8, .2, 1), transform .9s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .hero-cta.in {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .magnetic-btn {
+      --mx: 50%;
+      --my: 50%;
+      position: relative;
+      isolation: isolate;
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      letter-spacing: 0.03em;
+      padding: 16px 30px;
+      border-radius: 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      overflow: hidden;
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease;
+      animation: bob 4.4s ease-in-out infinite;
+    }
+
+    .magnetic-btn:nth-child(2) {
+      animation-delay: .35s;
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        translate: 0 0;
+      }
+
+      50% {
+        translate: 0 -4px;
+      }
+    }
+
+    .magnetic-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: conic-gradient(from calc(var(--mx) * 3.6deg), var(--cyan), var(--purple), transparent 60%, var(--cyan));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: .55;
+      transition: opacity .35s ease;
+      z-index: -2;
+      animation: spin-border 5s linear infinite;
+    }
+
+    @keyframes spin-border {
+      to {
+        --a: 360deg;
+      }
+    }
+
+    .magnetic-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      z-index: -1;
+      background: radial-gradient(120px circle at var(--mx) var(--my), rgba(255, 138, 61, 0.35), transparent 65%);
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+
+    .magnetic-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      animation-play-state: paused;
+      box-shadow: 0 18px 40px -14px rgba(255, 59, 63, 0.55);
+    }
+
+    .magnetic-btn:hover::after {
+      opacity: 1;
+    }
+
+    .magnetic-btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary-glass {
+      background: linear-gradient(120deg, rgba(255, 59, 63, 0.9), rgba(255, 138, 61, 0.9));
+      color: #04070d;
+      font-weight: 600;
+      box-shadow: 0 10px 26px -12px rgba(255, 59, 63, 0.6);
+    }
+
+    .btn-ghost-glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .magnetic-btn:hover .btn-icon {
+      transform: translateX(3px);
+    }
+
+    .btn-primary-glass:hover .btn-icon {
+      transform: scale(1.15);
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.55);
+      transform: scale(0);
+      animation: ripple-out .65s ease-out forwards;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    @keyframes ripple-out {
+      to {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width:640px) {
+      .hero-cta {
+        bottom: 84px;
+        flex-direction: column;
+        align-items: stretch;
+        width: 82vw;
+      }
+
+      .magnetic-btn {
+        justify-content: center;
+      }
+    }
+
+    /* ===== sound toggle ===== */
+    .sound-toggle {
+      position: absolute;
+      top: 96px;
+      right: 6vw;
+      z-index: 6;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
+      cursor: none;
+      color: var(--text);
+      opacity: 0;
+      transform: scale(.7);
+      transition: opacity .8s ease .3s, transform .8s cubic-bezier(.2, .8, .2, 1) .3s, border-color .3s ease, background .3s ease;
+    }
+
+    .sound-toggle.in {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .sound-toggle:hover {
+      border-color: var(--cyan);
+      background: rgba(255, 59, 63, 0.1);
+    }
+
+    .sound-toggle svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .sound-toggle .icon-unmute {
+      display: none;
+    }
+
+    .sound-toggle.is-unmuted .icon-mute {
+      display: none;
+    }
+
+    .sound-toggle.is-unmuted .icon-unmute {
+      display: block;
+    }
+
+    .sound-toggle .wave {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid var(--cyan);
+      opacity: 0;
+    }
+
+    .sound-toggle.is-unmuted .wave {
+      animation: sound-pulse 1.8s ease-out infinite;
+    }
+
+    @keyframes sound-pulse {
+      0% {
+        opacity: .6;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(1.6);
+      }
+    }
+
+    @media (max-width:640px) {
+      .sound-toggle {
+        top: 84px;
+        right: 5vw;
+        width: 42px;
+        height: 42px;
+      }
+    }
+
+    /* ===== hanging photo frame (scroll pop-down) ===== */
+    .hang-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      padding-top: 56px;
+      margin-bottom: -40px;
+      z-index: 5;
+    }
+
+    .hang-pin {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      margin-left: -1px;
+      width: 2px;
+      height: 56px;
+      background: linear-gradient(180deg, transparent, var(--muted));
+      transform-origin: top center;
+    }
+
+    .hang-pin::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      margin-left: -6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff, var(--red));
+      box-shadow: 0 0 14px rgba(255, 59, 63, 0.7);
+    }
+
+    .hang-card {
+      position: relative;
+      top: 0;
+      width: 220px;
+      padding: 10px 10px 26px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.06);
+      transform-origin: top center;
+      opacity: 0;
+      transform: translateY(-160px) rotate(-14deg);
+      transition: opacity .5s ease;
+    }
+
+    .hang-card img {
+      width: 100%;
+      display: block;
+      border-radius: 2px;
+      aspect-ratio: 4/4.6;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .hang-card .cap {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #3a2a28;
+      letter-spacing: 0.06em;
+      margin-top: 10px;
+    }
+
+    .hang-wrap.drop .hang-card {
+      opacity: 1;
+      animation: hangdrop 1.4s cubic-bezier(.22, 1, .36, 1) forwards;
+    }
+
+    .hang-wrap.drop .hang-pin {
+      animation: hangpin 1.4s cubic-bezier(.22, 1, .36, 1) forwards;
+    }
+
+    @keyframes hangdrop {
+      0% {
+        transform: translateY(-160px) rotate(-14deg);
+      }
+
+      55% {
+        transform: translateY(0) rotate(8deg);
+      }
+
+      72% {
+        transform: translateY(0) rotate(-5deg);
+      }
+
+      86% {
+        transform: translateY(0) rotate(3deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    @keyframes hangpin {
+
+      0%,
+      55% {
+        transform: scaleY(0);
+      }
+
+      100% {
+        transform: scaleY(1);
+      }
+    }
+
+    /* once the drop-swing settles, the photo keeps gently swaying toward wherever
+       the mouse is on the page — like it's hanging from a real pin and reacting
+       to the person moving around near it */
+    :root {
+      --mnx: 0;
+      --mny: 0;
+    }
+
+    .hang-wrap.settled .hang-card {
+      animation: none;
+      transform: rotate(calc(var(--mnx, 0) * 5deg)) translateY(calc(var(--mny, 0) * 3px));
+      transition: transform .5s ease-out;
+    }
+
+    .hang-wrap.settled .hang-pin {
+      animation: none;
+      transform: scaleY(1) rotate(calc(var(--mnx, 0) * 5deg));
+      transition: transform .5s ease-out;
+    }
+
+    .sec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .sec-head h2 {
+      font-size: clamp(30px, 4vw, 52px);
+      color: var(--text);
+    }
+
+    .sec-head p {
+      color: var(--muted);
+      max-width: 360px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ===== about ===== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .about-card {
+      padding: 34px;
+    }
+
+    .about-card p {
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 15.5px;
+    }
+
+    .about-card p+p {
+      margin-top: 16px;
+    }
+
+    .about-card b {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .code-block {
+      padding: 26px 28px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.9;
+      color: #8fd6ff;
+    }
+
+    .code-block .c1 {
+      color: var(--purple);
+    }
+
+    .code-block .c2 {
+      color: var(--cyan);
+    }
+
+    .code-block .c3 {
+      color: #5fe3a3;
+    }
+
+    .code-block .cm {
+      color: var(--muted);
+    }
+
+    /* ===== skills ===== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+    }
+
+    .skill-card {
+      padding: 26px 24px;
+      cursor: none;
+      transition: transform .12s ease, border-color .3s ease, background .3s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .skill-card:hover {
+      border-color: rgba(46, 230, 255, 0.4);
+      background: rgba(46, 230, 255, 0.04);
+    }
+
+    .skill-card .sk-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #04070d;
+      font-size: 15px;
+    }
+
+    .skill-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .skill-card p {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .skill-bar {
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .skill-bar i {
+      display: block;
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      width: 0%;
+      transition: width 1.4s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    /* ===== achievements (2-up, centered) ===== */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 18px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    @media (max-width:640px) {
+      .achievements-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .achieve-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 59, 63, 0.35);
+      padding-bottom: 2px;
+      transition: color .2s ease, border-color .2s ease;
+    }
+
+    .achieve-link:hover {
+      color: var(--purple);
+      border-color: var(--purple);
+    }
+
+    .achieve-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    /* ===== projects ===== */
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      perspective: 1600px;
+    }
+
+    /* ===== tree / branch layout ===== */
+    .projects.tree {
+      position: relative;
+      gap: 110px;
+      padding: 20px 0 10px;
+    }
+
+    .tree-trunk {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg,
+          transparent 0%,
+          rgba(255, 59, 63, 0.55) 8%,
+          rgba(255, 138, 61, 0.55) 50%,
+          rgba(255, 59, 63, 0.55) 92%,
+          transparent 100%);
+      background-size: 100% 220%;
+      animation: trunk-flow 5s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes trunk-flow {
+      0% {
+        background-position: 0% 0%;
+      }
+
+      100% {
+        background-position: 0% 100%;
+      }
+    }
+
+    .project-row {
+      position: relative;
+      width: 46%;
+      z-index: 1;
+      padding-top: 34px;
+    }
+
+    .project-row.side-left {
+      margin-right: auto;
+    }
+
+    .project-row.side-right {
+      margin-left: auto;
+    }
+
+    /* glowing node sitting on the trunk, at each branch — the "nail" the card hangs from */
+    .tree-node {
+      position: absolute;
+      top: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff, var(--cyan));
+      box-shadow: 0 0 0 4px rgba(255, 59, 63, 0.12), 0 0 18px rgba(255, 59, 63, 0.7);
+      transform: scale(0);
+      transition: transform .5s cubic-bezier(.34, 1.56, .64, 1) .3s;
+      z-index: 2;
+    }
+
+    .side-left .tree-node {
+      right: -47px;
+    }
+
+    .side-right .tree-node {
+      left: -47px;
+    }
+
+    .project-row.in .tree-node {
+      transform: scale(1);
+      animation: node-pulse 2.4s ease-in-out .8s infinite;
+    }
+
+    @keyframes node-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 4px rgba(255, 59, 63, 0.12), 0 0 18px rgba(255, 59, 63, 0.7);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(255, 138, 61, 0.16), 0 0 26px rgba(255, 138, 61, 0.85);
+      }
+    }
+
+    /* branch line connecting the trunk node out to a hook above the card, draws in on reveal */
+    .tree-branch {
+      position: absolute;
+      top: 7px;
+      width: 42px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      opacity: .55;
+      transform: scaleX(0);
+      transition: transform .6s cubic-bezier(.16, .8, .24, 1) .35s;
+      z-index: 1;
+    }
+
+    .side-left .tree-branch {
+      right: -42px;
+      transform-origin: right center;
+    }
+
+    .side-right .tree-branch {
+      left: -42px;
+      transform-origin: left center;
+    }
+
+    .project-row.in .tree-branch {
+      transform: scaleX(1);
+    }
+
+    /* thin thread that hangs down from the branch node to the top of the card, like the photo pin */
+    .tree-thread {
+      position: absolute;
+      top: 8px;
+      width: 2px;
+      height: 26px;
+      background: linear-gradient(180deg, rgba(255, 138, 61, 0.6), rgba(255, 59, 63, 0.15));
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: transform .5s cubic-bezier(.16, .8, .24, 1) .55s;
+      z-index: 1;
+    }
+
+    .side-left .tree-thread {
+      right: -1px;
+    }
+
+    .side-right .tree-thread {
+      left: -1px;
+    }
+
+    .project-row.in .tree-thread {
+      transform: scaleY(1) rotate(calc(var(--mnx, 0) * 6deg));
+      transition: transform .55s ease-out;
+    }
+
+    @media (max-width: 900px) {
+      .projects.tree {
+        gap: 60px;
+      }
+
+      .tree-trunk,
+      .tree-node,
+      .tree-branch,
+      .tree-thread {
+        display: none;
+      }
+
+      .project-row {
+        padding-top: 0;
+      }
+
+      .project-row,
+      .project-row.side-left,
+      .project-row.side-right {
+        width: 100%;
+        margin: 0;
+      }
+    }
+
+    /* tree-layout cards are narrower, so stack thumbnail above info instead of side-by-side */
+    .projects.tree .project-card {
+      grid-template-columns: 1fr;
+      padding: 28px;
+    }
+
+    .project-card {
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 32px;
+      align-items: center;
+      transition: border-color .3s ease, background .35s ease, box-shadow .4s cubic-bezier(.2, .8, .2, 1), transform .12s ease-out;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      will-change: transform;
+      /* live values driven by JS: rx/ry = tilt angle, tz = lift, sc = scale */
+      transform: perspective(1200px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(var(--tz, 0px)) scale(var(--sc, 1));
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    }
+
+    .project-card:hover,
+    .project-card.touch-pop {
+      border-color: rgba(168, 85, 247, 0.5);
+      background: rgba(168, 85, 247, 0.07);
+      box-shadow: 0 40px 80px -30px rgba(255, 59, 63, 0.35), 0 0 0 1px rgba(255, 138, 61, 0.15);
+    }
+
+    .project-card.touch-pop {
+      animation: touch-pop-bounce .5s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes touch-pop-bounce {
+      0% {
+        transform: perspective(1200px) scale(1);
+      }
+
+      45% {
+        transform: perspective(1200px) scale(1.045) translateZ(20px);
+      }
+
+      100% {
+        transform: perspective(1200px) scale(1.015) translateZ(10px);
+      }
+    }
+
+    /* cursor-follow spotlight glow on project cards (color layer) */
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 50%), rgba(255, 59, 63, 0.16), transparent 60%);
+      opacity: 0;
+      transition: opacity .4s ease;
+      pointer-events: none;
+    }
+
+    .project-card:hover::before,
+    .project-card.touch-pop::before {
+      opacity: 1;
+    }
+
+    /* glassmorphism specular highlight — a soft moving glare on top of the glass */
+    .project-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(240px circle at var(--sx, 50%) var(--sy, 50%), rgba(255, 255, 255, 0.16), transparent 70%);
+      mix-blend-mode: screen;
+      opacity: 0;
+      transition: opacity .35s ease;
+      pointer-events: none;
+    }
+
+    .project-card:hover::after,
+    .project-card.touch-pop::after {
+      opacity: 1;
+    }
+
+    /* ===== hanging reveal for project cards (swings down like the photo frame) ===== */
+    .project-card.hang-project {
+      perspective: 1400px;
+    }
+
+    .p-media {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background: #000;
+    }
+
+    .p-media video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+
+    /* ===== clickable project thumbnail (opens video modal) ===== */
+    .p-thumb {
+      cursor: none;
+      aspect-ratio: 16/9;
+      perspective: 900px;
+    }
+
+    .thumb-img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: top center;
+      transform: scale(1.01);
+      transition: transform .6s cubic-bezier(.2, .8, .2, 1), filter .6s ease;
+      filter: saturate(0.9) brightness(0.78);
+    }
+
+    .p-thumb:hover .thumb-img,
+    .p-thumb:focus-visible .thumb-img {
+      transform: scale(1.08) rotateX(2deg);
+      filter: saturate(1.05) brightness(0.9);
+    }
+
+    /* diagonal shine sweep across the thumbnail on hover */
+    .thumb-shine {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.22) 48%, transparent 56%);
+      background-size: 250% 250%;
+      background-position: 120% 0%;
+      opacity: 0;
+      transition: opacity .3s ease;
+      z-index: 2;
+    }
+
+    .p-thumb:hover .thumb-shine,
+    .p-thumb:focus-visible .thumb-shine {
+      opacity: 1;
+      animation: shine-sweep 1.1s ease forwards;
+    }
+
+    @keyframes shine-sweep {
+      0% {
+        background-position: 130% -10%;
+      }
+
+      100% {
+        background-position: -20% 110%;
+      }
+    }
+
+    /* scanning corner brackets that draw in on hover */
+    .thumb-brackets span {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--cyan);
+      opacity: 0;
+      transition: opacity .3s ease, transform .4s cubic-bezier(.2, .8, .2, 1);
+      z-index: 3;
+    }
+
+    .thumb-brackets .tl {
+      top: 10px;
+      left: 10px;
+      border-right: none;
+      border-bottom: none;
+      transform: translate(-6px, -6px);
+    }
+
+    .thumb-brackets .tr {
+      top: 10px;
+      right: 10px;
+      border-left: none;
+      border-bottom: none;
+      transform: translate(6px, -6px);
+    }
+
+    .thumb-brackets .bl {
+      bottom: 10px;
+      left: 10px;
+      border-right: none;
+      border-top: none;
+      transform: translate(-6px, 6px);
+    }
+
+    .thumb-brackets .br {
+      bottom: 10px;
+      right: 10px;
+      border-left: none;
+      border-top: none;
+      transform: translate(6px, 6px);
+    }
+
+    .p-thumb:hover .thumb-brackets span,
+    .p-thumb:focus-visible .thumb-brackets span {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    .thumb-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: linear-gradient(180deg, rgba(10, 4, 3, 0.15) 0%, rgba(10, 4, 3, 0.55) 100%);
+    }
+
+    .play-ring {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+      transition: transform .4s cubic-bezier(.2, .8, .2, 1), background .3s ease, box-shadow .4s ease;
+      animation: play-idle-pulse 2.6s ease-in-out infinite;
+    }
+
+    @keyframes play-idle-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 59, 63, 0.35);
+      }
+
+      50% {
+        box-shadow: 0 0 0 14px rgba(255, 59, 63, 0);
+      }
+    }
+
+    .play-ring::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 50%;
+      padding: 1px;
+      background: conic-gradient(var(--cyan), var(--purple), transparent 65%, var(--cyan));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: spin-border 4s linear infinite;
+      opacity: .8;
+    }
+
+    .play-icon {
+      width: 22px;
+      height: 22px;
+      color: var(--text);
+      margin-left: 3px;
+    }
+
+    .p-thumb:hover .play-ring,
+    .p-thumb:focus-visible .play-ring {
+      transform: scale(1.12);
+      background: rgba(255, 59, 63, 0.18);
+      box-shadow: 0 0 30px -6px rgba(255, 59, 63, 0.6);
+    }
+
+    .thumb-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+      opacity: .85;
+    }
+
+    .p-thumb:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    /* ===== video modal ===== */
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      perspective: 1600px;
+      transition: opacity .35s ease, visibility 0s linear .35s;
+    }
+
+    .video-modal.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity .35s ease;
+    }
+
+    .video-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(35, 9, 10, 0.92), rgba(4, 2, 2, 0.96));
+      backdrop-filter: blur(14px) saturate(120%);
+      -webkit-backdrop-filter: blur(14px) saturate(120%);
+    }
+
+    .video-modal-card {
+      --ox: 0px;
+      --oy: 0px;
+      position: relative;
+      width: min(900px, 90vw);
+      transform-style: preserve-3d;
+      /* starts small, rotated, and offset back at the point the card was clicked — erupts to full size/center */
+      transform: perspective(1400px) translate(var(--ox), var(--oy)) rotateX(28deg) rotateY(-18deg) translateZ(-200px) scale(.18);
+      opacity: 0;
+      transition: transform .7s cubic-bezier(.16, .9, .22, 1), opacity .45s ease;
+    }
+
+    .video-modal.open .video-modal-card {
+      transform: perspective(1400px) translate(0, 0) rotateX(0deg) rotateY(0deg) translateZ(0) scale(1);
+      opacity: 1;
+    }
+
+    /* ===== click "vanish upward with sprinkles" effect ===== */
+
+    /* the thumbnail itself dissolves and drifts upward */
+    .p-thumb.vanishing .thumb-img {
+      transition: opacity .6s cubic-bezier(.4, 0, .2, 1), transform .6s cubic-bezier(.4, 0, .2, 1), filter .6s ease;
+      opacity: 0;
+      transform: translateY(-80px) scale(0.85);
+      filter: blur(8px) brightness(1.35) saturate(1.2);
+    }
+
+    .p-thumb.vanishing .thumb-overlay {
+      transition: opacity .45s ease, transform .5s cubic-bezier(.4, 0, .2, 1);
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+
+    .p-thumb.vanishing .thumb-shine,
+    .p-thumb.vanishing .p-note {
+      transition: opacity .3s ease;
+      opacity: 0;
+    }
+
+    /* a soft rising glow underneath the sprinkles, ties the dissolve together */
+    .vanish-glow {
+      position: fixed;
+      z-index: 3899;
+      left: 0;
+      top: 0;
+      width: 6px;
+      height: 6px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 220, 200, 0.9), rgba(255, 138, 61, 0.35) 45%, transparent 75%);
+      pointer-events: none;
+      animation: vanish-glow-anim .8s cubic-bezier(.2, .8, .2, 1) forwards;
+    }
+
+    @keyframes vanish-glow-anim {
+      0% {
+        width: 6px;
+        height: 6px;
+        opacity: .9;
+      }
+
+      100% {
+        width: 260px;
+        height: 320px;
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(-90px);
+      }
+    }
+
+    /* individual sparkle particles rising with drift + gentle spin, fading as they go */
+    .sprinkle {
+      position: fixed;
+      z-index: 3902;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      line-height: 1;
+      user-select: none;
+      text-shadow: 0 0 6px currentColor, 0 0 14px currentColor;
+      animation: sprinkle-rise .95s cubic-bezier(.16, .8, .3, 1) forwards;
+    }
+
+    @keyframes sprinkle-rise {
+      0% {
+        transform: translate(-50%, -50%) translate(0, 0) scale(.3) rotate(0deg);
+        opacity: 0;
+      }
+
+      18% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translate(calc(var(--drift) * 0.2), -14px) scale(1) rotate(calc(var(--rot) * 0.2));
+      }
+
+      100% {
+        transform: translate(-50%, -50%) translate(var(--drift), var(--rise)) scale(.5) rotate(var(--rot));
+        opacity: 0;
+      }
+    }
+
+    .video-modal-glow {
+      position: absolute;
+      inset: -2px;
+      border-radius: 20px;
+      padding: 2px;
+      background: conic-gradient(from 0deg, var(--cyan), var(--purple), transparent 55%, var(--cyan));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: spin-border 6s linear infinite;
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .video-modal-frame {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background: #000;
+      box-shadow: 0 60px 120px -30px rgba(0, 0, 0, 0.8);
+    }
+
+    .video-modal-frame video {
+      width: 100%;
+      max-height: 76vh;
+      display: block;
+      aspect-ratio: 16/9;
+      background: #000;
+    }
+
+    .video-modal-title {
+      margin-top: 16px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .video-modal-close {
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-2);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+      font-size: 20px;
+      line-height: 1;
+      cursor: none;
+      z-index: 2;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1), border-color .3s ease, background .3s ease;
+    }
+
+    .video-modal-close:hover {
+      transform: rotate(90deg);
+      border-color: var(--cyan);
+      background: rgba(255, 59, 63, 0.15);
+    }
+
+    @media (max-width:640px) {
+      .video-modal-close {
+        top: -14px;
+        right: 0;
+      }
+    }
+
+    .p-note {
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--amber);
+      line-height: 1.6;
+    }
+
+    .p-index {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .p-index b {
+      display: inline;
+      font-size: 15px;
+      color: var(--cyan);
+      font-family: var(--font-display);
+      margin-right: 6px;
+    }
+
+    .p-info h3 {
+      font-size: 21px;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .p-info p {
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .p-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      color: var(--cyan);
+      background: rgba(46, 230, 255, 0.06);
+    }
+
+    @media (max-width:860px) {
+      .project-card {
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+    }
+
+    /* ===== contact ===== */
+    .contact-wrap {
+      padding: 70px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-wrap h2 {
+      font-size: clamp(34px, 6vw, 72px);
+      margin-bottom: 20px;
+    }
+
+    .contact-wrap p {
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      font-size: 15px;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 8vw 60px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    /* reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(44px) scale(0.98);
+      transition: opacity .9s cubic-bezier(.2, .8, .2, 1), transform .9s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: opacity 1s cubic-bezier(.2, .8, .2, 1), transform 1s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .reveal-left.in {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity 1s cubic-bezier(.2, .8, .2, 1), transform 1s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .reveal-right.in {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* hanging project-card reveal — swings down off the branch like the photo frame does,
+       then hands off to the live hover-tilt vars once it settles ('landed') */
+    .hang-project {
+      opacity: 0;
+      transform-origin: top center;
+      transform: translateY(-170px) rotate(-13deg);
+      transition: opacity .45s ease;
+    }
+
+    .hang-project.hang-right {
+      transform: translateY(-170px) rotate(13deg);
+    }
+
+    .hang-project.in {
+      opacity: 1;
+      animation: hang-swing-left 1.35s cubic-bezier(.22, 1, .36, 1) forwards;
+    }
+
+    .hang-project.hang-right.in {
+      animation-name: hang-swing-right;
+    }
+
+    @keyframes hang-swing-left {
+      0% {
+        transform: translateY(-170px) rotate(-13deg);
+      }
+
+      52% {
+        transform: translateY(0) rotate(7deg);
+      }
+
+      70% {
+        transform: rotate(-4.5deg);
+      }
+
+      85% {
+        transform: rotate(2.5deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    @keyframes hang-swing-right {
+      0% {
+        transform: translateY(-170px) rotate(13deg);
+      }
+
+      52% {
+        transform: translateY(0) rotate(-7deg);
+      }
+
+      70% {
+        transform: rotate(4.5deg);
+      }
+
+      85% {
+        transform: rotate(-2.5deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    /* once the swing settles, control hands back to the live hover/tilt CSS vars,
+       plus a constant subtle sway toward wherever the mouse is on the page */
+    .hang-project.landed {
+      animation: none;
+      transform: perspective(1200px) rotate(calc(var(--mnx, 0) * 2.2deg)) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(var(--tz, 0px)) scale(var(--sc, 1));
+      transition: transform .12s ease-out, box-shadow .4s cubic-bezier(.2, .8, .2, 1), border-color .3s ease, background .35s ease;
+    }
+
+    .reveal.d1 {
+      transition-delay: .08s;
+    }
+
+    .reveal.d2 {
+      transition-delay: .16s;
+    }
+
+    .reveal.d3 {
+      transition-delay: .24s;
+    }
+
+    .reveal.d4 {
+      transition-delay: .32s;
+    }
+
+    .reveal.d5 {
+      transition-delay: .4s;
+    }
+
+    .reveal.d6 {
+      transition-delay: .48s;
+    }
+
+    @media (max-width:980px) {}
+
+    @media (max-width:760px) {
+      section {
+        padding: 100px 6vw;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        gap: 0;
+        padding: 12px 18px;
+      }
+
+      nav ul {
+        display: none;
+      }
+
+      .hang-project,
+      .hang-project.hang-right {
+        transform: translateY(-90px) rotate(-9deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .reveal,
+      .reveal-left,
+      .reveal-right,
+      .hang-project,
+      .magnetic-btn,
+      .play-ring,
+      .project-card,
+      .video-modal-card,
+      .vanish-glow,
+      .sprinkle {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+        filter: none !important;
+        opacity: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="cursor-dot" id="cdot"></div>
+  <div class="cursor-ring" id="cring"></div>
+  <div class="grain"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav>
+    <div class="logo">teja<span>.</span>deep</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#achievements">Achievements</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-video-bg">
+        <video id="introVid" autoplay muted loop playsinline poster="">
+          <source src="intro.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <button class="sound-toggle" id="soundToggle" aria-label="Toggle intro sound"
+        title="Sound is muted by the browser until you click">
+        <span class="wave"></span>
+        <svg class="icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="4,9 8,9 13,4.5 13,19.5 8,15 4,15"></polygon>
+          <line x1="17" y1="8" x2="22" y2="16"></line>
+          <line x1="22" y1="8" x2="17" y2="16"></line>
+        </svg>
+        <svg class="icon-unmute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="4,9 8,9 13,4.5 13,19.5 8,15 4,15"></polygon>
+          <path d="M16.5 8.5a5 5 0 0 1 0 7"></path>
+          <path d="M19 6a9 9 0 0 1 0 12"></path>
+        </svg>
+      </button>
+
+      <div class="hero-cta" id="heroCta">
+        <a href="#work" class="magnetic-btn btn-primary-glass" data-magnetic>
+          <span class="btn-icon">▶</span>
+          <span>View Work</span>
+        </a>
+        <a href="#contact" class="magnetic-btn btn-ghost-glass" data-magnetic>
+          <span>Hire Me</span>
+          <span class="btn-icon">→</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="hang-wrap reveal-hang" id="hangWrap">
+      <div class="hang-pin"></div>
+      <div class="hang-card">
+        <img src="hang_photo.jpg" alt="Teja">
+        <div class="cap">— Teja —</div>
+      </div>
+    </div>
+
+    <section id="about">
+      <div class="eyebrow">About</div>
+      <div class="sec-head">
+        <h2>About <span class="grad">me.</span></h2>
+      </div>
+      <div class="about-grid">
+        <div class="glass about-card reveal-left">
+          <p>Passionate CSE (AI) student with skills in <b>AI, Machine Learning, and Full-Stack Development</b>.
+            Enthusiastic about building innovative solutions, learning new technologies, and contributing to
+            impactful projects through creativity, problem-solving, and teamwork.</p>
+          <p>Currently pursuing a <b>B.Tech in Computer Science &amp; Artificial Intelligence</b> at Amrita Vishwa
+            Vidyapeetham (2023–2027), with hands-on work spanning Django/React full-stack builds, computer vision
+            systems, and multi-agent reinforcement learning research.</p>
+          <p>Engineer by day, storyteller by night — always turning ideas into real, working systems.</p>
+        </div>
+        <div class="glass code-block reveal-right">
+          <div><span class="c1">const</span> <span class="c2">developer</span> = {</div>
+          <div>&nbsp;&nbsp;name: <span class="c3">"Teja Deep"</span>,</div>
+          <div>&nbsp;&nbsp;role: <span class="c3">"CS & AI Student · Full-Stack Dev"</span>,</div>
+          <div>&nbsp;&nbsp;stack: [<span class="c3">"Python"</span>, <span class="c3">"Django"</span>, <span
+              class="c3">"React"</span>, <span class="c3">"Node.js"</span>],</div>
+          <div>&nbsp;&nbsp;focus: [<span class="c3">"machine learning"</span>, <span class="c3">"computer
+              vision"</span>, <span class="c3">"full-stack systems"</span>],</div>
+          <div>&nbsp;&nbsp;coffee: <span class="c1">true</span>, <span class="cm">// non-negotiable</span></div>
+          <div>};</div>
+          <div>&nbsp;</div>
+          <div><span class="cm">// currently exploring multi-agent RL →</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="eyebrow">Selected work</div>
+      <div class="sec-head">
+        <h2>Recent projects</h2>
+        <p>Systems I've built end to end, from backend logic to the interface people actually touch.</p>
+      </div>
+      <div class="projects tree">
+        <div class="tree-trunk" aria-hidden="true"></div>
+
+        <div class="project-row side-left">
+          <span class="tree-node" aria-hidden="true"></span>
+          <span class="tree-branch" aria-hidden="true"></span>
+          <span class="tree-thread" aria-hidden="true"></span>
+          <div class="glass project-card hang-project hang-left">
+            <div class="p-media p-thumb" tabindex="0" role="button" aria-haspopup="dialog"
+              aria-label="Play AI Fitness Tracker demo video" data-video="fit demo.mp4"
+              data-poster="ai_fitness_thumb.png" data-title="AI Fitness Tracker — full walkthrough">
+              <img class="thumb-img" src="ai_fitness_thumb.png" alt="AI Fitness Tracker interface preview">
+              <div class="thumb-shine"></div>
+              <div class="thumb-brackets"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span
+                  class="br"></span></div>
+              <div class="thumb-overlay">
+                <div class="play-ring">
+                  <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7L8 5z" />
+                  </svg>
+                </div>
+                <span class="thumb-label">Watch demo</span>
+              </div>
+              <p class="p-note">⚠ Live demo link is temporarily down — tap the card for a full video walkthrough.</p>
+            </div>
+            <div class="p-info">
+              <div class="p-index"><b>01</b>PROJECT</div>
+              <h3>AI Fitness Tracker</h3>
+              <p>An AI-powered fitness tracking web application designed to help users monitor and improve their
+                fitness activities. The system allows users to track workouts, manage fitness goals, monitor
+                progress, and receive personalized recommendations. It uses AI-based analysis to provide insights
+                into workout performance and support users in maintaining a healthier lifestyle. The application is
+                developed with a user-friendly interface and backend services for managing user profiles, workout
+                data, and progress records.</p>
+              <div class="p-tags"><span class="tag">Python</span><span class="tag">Pandas</span><span
+                  class="tag">Scikit-learn</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-row side-right">
+          <span class="tree-node" aria-hidden="true"></span>
+          <span class="tree-branch" aria-hidden="true"></span>
+          <span class="tree-thread" aria-hidden="true"></span>
+          <div class="glass project-card hang-project hang-right">
+            <div class="p-media p-thumb" tabindex="0" role="button" aria-haspopup="dialog"
+              aria-label="Play Face Recognition Attendance System demo video" data-video="smart demo.mp4"
+              data-poster="smart_attendance_thumb.jpeg"
+              data-title="Face Recognition Attendance System — full walkthrough">
+              <img class="thumb-img" src="smart_attendance_thumb.jpeg" alt="Smart Attendance System interface preview">
+              <div class="thumb-shine"></div>
+              <div class="thumb-brackets"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span
+                  class="br"></span></div>
+              <div class="thumb-overlay">
+                <div class="play-ring">
+                  <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7L8 5z" />
+                  </svg>
+                </div>
+                <span class="thumb-label">Watch demo</span>
+              </div>
+              <p class="p-note">⚠ Live demo link is temporarily down — tap the card for a full video walkthrough.</p>
+            </div>
+            <div class="p-info">
+              <div class="p-index"><b>02</b>PROJECT</div>
+              <h3>Face Recognition Attendance System</h3>
+              <p>A smart attendance management system developed to automate and simplify the process of recording
+                and monitoring student attendance. The system enables efficient attendance tracking, student data
+                management, attendance history, and report generation. It reduces manual work, minimizes errors, and
+                provides an organized way for institutions to monitor attendance records. The system can be enhanced
+                with AI or facial-recognition-based attendance to automatically identify students and record their
+                attendance.</p>
+              <div class="p-tags"><span class="tag">Django</span><span class="tag">OpenCV</span><span
+                  class="tag">Dlib</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="eyebrow">Toolkit</div>
+      <div class="sec-head">
+        <h2>Skills &amp; stack</h2>
+        <p>The languages and frameworks I reach for across full-stack and ML work.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="glass skill-card reveal d1" data-level="90">
+          <div class="sk-icon">PY</div>
+          <h3>Python / Java</h3>
+          <p>Core languages for problem-solving, data structures, and backend logic.</p>
+          <div class="skill-bar"><i></i></div>
+        </div>
+        <div class="glass skill-card reveal d2" data-level="88">
+          <div class="sk-icon">DJ</div>
+          <h3>Django &amp; REST APIs</h3>
+          <p>Server-side systems, auth, and API design for real applications.</p>
+          <div class="skill-bar"><i></i></div>
+        </div>
+        <div class="glass skill-card reveal d3" data-level="85">
+          <div class="sk-icon">RN</div>
+          <h3>React &amp; Node.js</h3>
+          <p>Full-stack interfaces backed by real-time data and services.</p>
+          <div class="skill-bar"><i></i></div>
+        </div>
+        <div class="glass skill-card reveal d4" data-level="85">
+          <div class="sk-icon">ML</div>
+          <h3>Machine &amp; Deep Learning</h3>
+          <p>Model building, training, and evaluation across ML and DL tasks.</p>
+          <div class="skill-bar"><i></i></div>
+        </div>
+        <div class="glass skill-card reveal d5" data-level="80">
+          <div class="sk-icon">CV</div>
+          <h3>Computer Vision</h3>
+          <p>OpenCV and Dlib-driven vision systems, from detection to recognition.</p>
+          <div class="skill-bar"><i></i></div>
+        </div>
+        <div class="glass skill-card reveal d6" data-level="78">
+          <div class="sk-icon">DS</div>
+          <h3>Data Science &amp; Big Data</h3>
+          <p>Pandas, Scikit-learn, MapReduce and Hadoop Streaming, versioned with Git.</p>
+          <div class="skill-bar"><i></i></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="achievements">
+      <div class="eyebrow">Milestones</div>
+      <div class="sec-head">
+        <h2>Achievements</h2>
+        <p>Certifications and internships that shaped how I build.</p>
+      </div>
+      <div class="achievements-grid">
+        <div class="glass skill-card reveal d1">
+          <div class="sk-icon">🎓</div>
+          <h3>Deloitte Data Science Job Simulation</h3>
+          <p>Completed Deloitte's job simulation certificate, applying data science workflows to real business
+            scenarios.</p>
+          <a class="achieve-link"
+            href="https://drive.google.com/file/d/1M2A-2q3jxQ4e80qFwndj_hEamhOkivHz/view?usp=drive_link" target="_blank"
+            rel="noopener">View certificate ↗</a>
+        </div>
+        <div class="glass skill-card reveal d2">
+          <div class="sk-icon">💼</div>
+          <h3>ML Internship — I Studio Platform</h3>
+          <p>Three-month machine learning internship applying ML techniques to real product problems.</p>
+          <div class="achieve-links">
+            <a class="achieve-link"
+              href="https://drive.google.com/file/d/1EFCc0U1dmlYy4-_oAAuw9K27DK0LD-zv/view?usp=drive_link"
+              target="_blank" rel="noopener">Certificate 1 ↗</a>
+            <a class="achieve-link"
+              href="https://drive.google.com/file/d/1PLKY9PPiVih44Vch-lgmF2t8M-wEceWK/view?usp=drive_link"
+              target="_blank" rel="noopener">Certificate 2 ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="glass contact-wrap reveal">
+        <div class="eyebrow" style="justify-content:center;">Get in touch</div>
+        <h2>Let's build<br>something <span class="grad">unforgettable.</span></h2>
+        <p>Open to internships, full-time roles, and interesting collaborations. Usually replies within a day.
+        </p>
+        <div class="contact-links">
+          <a href="mailto:teja98111@gmail.com" class="btn btn-solid">Email me →</a>
+          <a href="https://github.com/teja981" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+          <a href="https://www.linkedin.com/in/pasupuleti-tejadeep-3483682b9" target="_blank" rel="noopener"
+            class="btn btn-ghost">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>© 2026 Teja Deep — Crafted with Three.js, glass and way too much coffee.</footer>
+  </main>
+
+  <div class="video-modal" id="videoModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="video-modal-backdrop" data-close></div>
+    <div class="video-modal-card">
+      <button class="video-modal-close" data-close aria-label="Close video">&times;</button>
+      <div class="video-modal-glow"></div>
+      <div class="video-modal-frame">
+        <video id="modalVideo" controls playsinline preload="none"></video>
+      </div>
+      <div class="video-modal-title" id="modalTitle"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    /* ===================== CURSOR ===================== */
+    const cdot = document.getElementById('cdot');
+    const cring = document.getElementById('cring');
+    let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+    /* global sway target/current — normalized -1..1 mouse position, used to make
+       hanging elements (photo + project cards) gently swing as the cursor moves
+       anywhere on the page, not just when hovering directly over them */
+    let swayTX = 0, swayTY = 0, swayX = 0, swayY = 0;
+    window.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cdot.style.left = mx + 'px'; cdot.style.top = my + 'px';
+      swayTX = (mx / innerWidth - 0.5) * 2;
+      swayTY = (my / innerHeight - 0.5) * 2;
+    });
+    (function loop() {
+      rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
+      cring.style.left = rx + 'px'; cring.style.top = ry + 'px';
+      // lerp toward the target for a smooth, slightly delayed "swinging" feel
+      swayX += (swayTX - swayX) * 0.045;
+      swayY += (swayTY - swayY) * 0.045;
+      document.documentElement.style.setProperty('--mnx', swayX.toFixed(3));
+      document.documentElement.style.setProperty('--mny', swayY.toFixed(3));
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a, .skill-card, .project-card, .btn, .magnetic-btn, .sound-toggle, .p-thumb, .video-modal-close').forEach(el => {
+      el.addEventListener('mouseenter', () => cring.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cring.classList.remove('hover'));
+    });
+
+    /* ===================== THREE.JS BACKGROUND ===================== */
+    const canvas = document.getElementById('bg-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 100);
+    camera.position.z = 9;
+
+    // central wireframe icosahedron "core"
+    const coreGeo = new THREE.IcosahedronGeometry(2.3, 1);
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0xff3b3f, wireframe: true, transparent: true, opacity: 0.55 });
+    const core = new THREE.Mesh(coreGeo, coreMat);
+    scene.add(core);
+
+    const coreGeo2 = new THREE.IcosahedronGeometry(2.75, 0);
+    const coreMat2 = new THREE.MeshBasicMaterial({ color: 0xff8a3d, wireframe: true, transparent: true, opacity: 0.28 });
+    const core2 = new THREE.Mesh(coreGeo2, coreMat2);
+    scene.add(core2);
+
+    // floating particles field
+    const PCOUNT = 900;
+    const pGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(PCOUNT * 3);
+    for (let i = 0; i < PCOUNT; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 30;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+    }
+    pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0xffb199, size: 0.045, transparent: true, opacity: 0.7 });
+    const points = new THREE.Points(pGeo, pMat);
+    scene.add(points);
+
+    // a few slow orbiting small nodes, connected by a shifting constellation of lines
+    const nodes = [];
+    const NODE_COUNT = 14;
+    for (let i = 0; i < NODE_COUNT; i++) {
+      const g = new THREE.SphereGeometry(0.045, 8, 8);
+      const m = new THREE.MeshBasicMaterial({ color: i % 2 === 0 ? 0xff3b3f : 0xff8a3d });
+      const s = new THREE.Mesh(g, m);
+      const radius = 3.2 + Math.random() * 1.6;
+      const angle = Math.random() * Math.PI * 2;
+      const tilt = Math.random() * Math.PI;
+      s.userData = { radius, angle, tilt, speed: 0.15 + Math.random() * 0.25 };
+      scene.add(s);
+      nodes.push(s);
+    }
+
+    // constellation lines between nearby orbiting nodes — redrawn each frame
+    const MAX_LINKS = NODE_COUNT * NODE_COUNT;
+    const linkGeo = new THREE.BufferGeometry();
+    const linkPositions = new Float32Array(MAX_LINKS * 2 * 3);
+    linkGeo.setAttribute('position', new THREE.BufferAttribute(linkPositions, 3));
+    linkGeo.setDrawRange(0, 0);
+    const linkMat = new THREE.LineBasicMaterial({ color: 0xff8a3d, transparent: true, opacity: 0.18 });
+    const linkLines = new THREE.LineSegments(linkGeo, linkMat);
+    scene.add(linkLines);
+    const LINK_DIST = 3.4;
+
+    // slow-rotating outer ring of dashed orbit paths, purely atmospheric
+    const orbitGroup = new THREE.Group();
+    [3.6, 4.3, 5.0].forEach((r, i) => {
+      const ringGeo = new THREE.RingGeometry(r, r + 0.006, 128);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xff3b3f, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = Math.PI / 2 + i * 0.4;
+      ring.rotation.y = i * 0.6;
+      orbitGroup.add(ring);
+    });
+    scene.add(orbitGroup);
+
+    let targetRotX = 0, targetRotY = 0;
+    window.addEventListener('mousemove', e => {
+      const nx = (e.clientX / innerWidth - 0.5) * 2;
+      const ny = (e.clientY / innerHeight - 0.5) * 2;
+      targetRotY = nx * 0.6;
+      targetRotX = ny * 0.4;
+      camera.position.x += (nx * 0.8 - camera.position.x) * 0.02;
+      camera.position.y += (-ny * 0.8 - camera.position.y) * 0.02;
+    });
+
+    let scrollY = 0;
+    window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+
+    const clock = new THREE.Clock();
+    function animate() {
+      const t = clock.getElapsedTime();
+      core.rotation.y += 0.0022;
+      core.rotation.x += 0.0009;
+      core2.rotation.y -= 0.0014;
+      core2.rotation.x += 0.0006;
+
+      core.rotation.y += (targetRotY - core.rotation.y) * 0.0; // keep continuous spin
+      core.rotation.x += (targetRotX * 0.3);
+
+      core.position.y = Math.sin(t * 0.5) * 0.15;
+      core2.position.y = Math.sin(t * 0.5 + 1) * 0.15;
+
+      points.rotation.y = t * 0.02 + targetRotY * 0.1;
+      points.rotation.x = targetRotX * 0.1;
+
+      orbitGroup.rotation.y = t * 0.015;
+      orbitGroup.rotation.z = Math.sin(t * 0.1) * 0.05;
+
+      nodes.forEach(n => {
+        const a = n.userData.angle + t * n.userData.speed;
+        n.position.x = Math.cos(a) * n.userData.radius;
+        n.position.z = Math.sin(a) * n.userData.radius;
+        n.position.y = Math.sin(a * 1.3) * n.userData.tilt * 0.6;
+      });
+
+      // rebuild constellation link segments between close nodes
+      let linkIdx = 0;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i].position, b = nodes[j].position;
+          const d = a.distanceTo(b);
+          if (d < LINK_DIST) {
+            const base = linkIdx * 6;
+            linkPositions[base] = a.x; linkPositions[base + 1] = a.y; linkPositions[base + 2] = a.z;
+            linkPositions[base + 3] = b.x; linkPositions[base + 4] = b.y; linkPositions[base + 5] = b.z;
+            linkIdx++;
+          }
+        }
+      }
+      linkGeo.setDrawRange(0, linkIdx * 2);
+      linkGeo.attributes.position.needsUpdate = true;
+
+      camera.position.z = 9 + scrollY * 0.0012;
+      camera.lookAt(0, 0, 0);
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    /* ===================== TILT ON SKILL CARDS ===================== */
+    document.querySelectorAll('.skill-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(700px) rotateY(${px * 8}deg) rotateX(${-py * 8}deg) translateY(-2px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(700px) rotateY(0) rotateX(0) translateY(0)';
+      });
+    });
+
+    /* ===================== TILT + SPOTLIGHT ON PROJECT CARDS ===================== */
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--sx', (px * 100) + '%');
+        card.style.setProperty('--sy', (py * 100) + '%');
+        // full 3D tilt following the cursor, plus a slight lift + scale pop
+        const rx = (px - 0.5) * 14;   // rotateY amount
+        const ry = -(py - 0.5) * 10;  // rotateX amount
+        card.style.setProperty('--rx', rx + 'deg');
+        card.style.setProperty('--ry', ry + 'deg');
+        card.style.setProperty('--tz', '18px');
+        card.style.setProperty('--sc', '1.015');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+        card.style.setProperty('--tz', '0px');
+        card.style.setProperty('--sc', '1');
+      });
+
+      // touch devices: no hover, so tapping the card itself pops it and shows the glass glow
+      card.addEventListener('touchstart', e => {
+        const t = e.touches[0];
+        const r = card.getBoundingClientRect();
+        const px = (t.clientX - r.left) / r.width;
+        const py = (t.clientY - r.top) / r.height;
+        card.style.setProperty('--sx', (px * 100) + '%');
+        card.style.setProperty('--sy', (py * 100) + '%');
+        card.classList.add('touch-pop');
+      }, { passive: true });
+      card.addEventListener('touchend', () => {
+        setTimeout(() => card.classList.remove('touch-pop'), 900);
+      }, { passive: true });
+    });
+
+    /* ===================== TILT ON PROJECT THUMBNAILS ===================== */
+    document.querySelectorAll('.p-thumb').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(900px) rotateY(${px * 6}deg) rotateX(${-py * 6}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotateY(0) rotateX(0)';
+      });
+    });
+
+    /* ===================== VIDEO MODAL (vanish-with-sprinkles → 3D pop-in) ===================== */
+    const videoModal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalCard = document.querySelector('.video-modal-card');
+    let lastFocused = null;
+    let activeVanishedThumb = null;
+
+    function openVideoModal(el, originX, originY) {
+      lastFocused = document.activeElement;
+      modalVideo.setAttribute('poster', el.dataset.poster || '');
+      modalVideo.src = el.dataset.video;
+      modalTitle.textContent = el.dataset.title || '';
+
+      // make the modal appear to erupt outward from wherever the card was clicked
+      const cx = (typeof originX === 'number') ? originX : innerWidth / 2;
+      const cy = (typeof originY === 'number') ? originY : innerHeight / 2;
+      const dx = cx - innerWidth / 2;
+      const dy = cy - innerHeight / 2;
+      modalCard.style.setProperty('--ox', dx + 'px');
+      modalCard.style.setProperty('--oy', dy + 'px');
+
+      videoModal.classList.add('open');
+      videoModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      modalVideo.play().catch(() => { });
+      videoModal.querySelector('.video-modal-close').focus();
+    }
+
+    function closeVideoModal() {
+      videoModal.classList.remove('open');
+      videoModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      modalVideo.pause();
+      modalVideo.removeAttribute('src');
+      modalVideo.load();
+      // bring the thumbnail back so the card is ready for next time
+      if (activeVanishedThumb) {
+        activeVanishedThumb.classList.remove('vanishing');
+        activeVanishedThumb = null;
+      }
+      if (lastFocused) lastFocused.focus();
+    }
+
+    /* vanish-upward-with-sprinkles: the thumbnail dissolves and drifts up while
+       sparkle particles rise around it, then the video modal erupts open */
+    function triggerSprinkleVanish(el, x, y) {
+      el.classList.add('vanishing');
+      activeVanishedThumb = el;
+
+      const glow = document.createElement('div');
+      glow.className = 'vanish-glow';
+      glow.style.left = x + 'px';
+      glow.style.top = y + 'px';
+      document.body.appendChild(glow);
+      glow.addEventListener('animationend', () => glow.remove());
+
+      const glyphs = ['✦', '✧', '✶', '★', '·'];
+      const colors = ['#ff3b3f', '#ff8a3d', '#fff2ec', '#ffce9e'];
+      const SPARKLES = 22;
+      const rect = el.getBoundingClientRect();
+      for (let i = 0; i < SPARKLES; i++) {
+        const s = document.createElement('span');
+        s.className = 'sprinkle';
+        // scatter the sparkle starting points across the thumbnail, not just one point
+        const sx = rect.left + Math.random() * rect.width;
+        const sy = rect.top + rect.height * (0.35 + Math.random() * 0.6);
+        const drift = (Math.random() - 0.5) * 160;
+        const rise = -(140 + Math.random() * 160);
+        const rot = Math.random() * 360 - 180;
+        const size = 10 + Math.random() * 16;
+        s.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+        s.style.left = sx + 'px';
+        s.style.top = sy + 'px';
+        s.style.fontSize = size + 'px';
+        s.style.color = colors[Math.floor(Math.random() * colors.length)];
+        s.style.setProperty('--drift', drift + 'px');
+        s.style.setProperty('--rise', rise + 'px');
+        s.style.setProperty('--rot', rot + 'deg');
+        s.style.animationDelay = (Math.random() * 0.35) + 's';
+        document.body.appendChild(s);
+        s.addEventListener('animationend', () => s.remove());
+      }
+    }
+
+    document.querySelectorAll('.p-thumb').forEach(el => {
+      el.addEventListener('click', e => {
+        const r = el.getBoundingClientRect();
+        const x = e.clientX || (r.left + r.width / 2);
+        const y = e.clientY || (r.top + r.height / 2);
+        triggerSprinkleVanish(el, x, y);
+        setTimeout(() => openVideoModal(el, x, y), 520);
+      });
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const r = el.getBoundingClientRect();
+          const x = r.left + r.width / 2;
+          const y = r.top + r.height / 2;
+          triggerSprinkleVanish(el, x, y);
+          setTimeout(() => openVideoModal(el, x, y), 520);
+        }
+      });
+    });
+
+    videoModal.querySelectorAll('[data-close]').forEach(btn => {
+      btn.addEventListener('click', closeVideoModal);
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && videoModal.classList.contains('open')) closeVideoModal();
+    });
+
+    /* ===================== HERO CTA: magnetic pull + glow + ripple ===================== */
+    document.querySelectorAll('[data-magnetic]').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const px = e.clientX - r.left;
+        const py = e.clientY - r.top;
+        btn.style.setProperty('--mx', px + 'px');
+        btn.style.setProperty('--my', py + 'px');
+        const dx = (px / r.width - 0.5) * 10;
+        const dy = (py / r.height - 0.5) * 10;
+        btn.style.transform = `translate(${dx}px, ${dy - 4}px) scale(1.03)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      });
+      btn.addEventListener('click', e => {
+        const r = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        const size = Math.max(r.width, r.height) * 1.6;
+        ripple.className = 'ripple';
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - r.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - r.top - size / 2) + 'px';
+        btn.appendChild(ripple);
+        ripple.addEventListener('animationend', () => ripple.remove());
+      });
+    });
+
+    // reveal the hero CTA + sound toggle shortly after load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('heroCta').classList.add('in');
+        document.getElementById('soundToggle').classList.add('in');
+      }, 400);
+    });
+
+    /* ===================== SOUND TOGGLE =====================
+       Browsers block autoplay-with-sound: <video autoplay> only plays
+       automatically if it's muted. That's why "sound isn't coming" —
+       it's not a bug, it's the browser's autoplay policy. Unmuting is
+       allowed once the visitor interacts (a click), so this button
+       flips `muted` on a real user gesture and keeps it in sync visually. */
+    const introVid = document.getElementById('introVid');
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.addEventListener('click', () => {
+      introVid.muted = !introVid.muted;
+      introVid.play().catch(() => { });
+      soundToggle.classList.toggle('is-unmuted', !introVid.muted);
+      soundToggle.setAttribute('title', introVid.muted ? 'Sound is muted — click to unmute' : 'Click to mute');
+    });
+
+    /* ===================== HANGING PHOTO POP-DOWN ===================== */
+    const hangWrap = document.getElementById('hangWrap');
+    const hangCardEl = hangWrap.querySelector('.hang-card');
+    hangCardEl.addEventListener('animationend', () => {
+      hangWrap.classList.add('settled');
+    });
+    const hangIO = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          hangWrap.classList.add('drop');
+          hangIO.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    hangIO.observe(hangWrap);
+
+    /* ===================== 3D SCENE FADES IN AFTER HERO ===================== */
+    const heroEl = document.querySelector('.hero');
+    function updateCanvasVisibility() {
+      const heroBottom = heroEl.getBoundingClientRect().bottom;
+      if (heroBottom < innerHeight * 0.6) {
+        canvas.classList.add('active');
+      } else {
+        canvas.classList.remove('active');
+      }
+    }
+    window.addEventListener('scroll', updateCanvasVisibility, { passive: true });
+    updateCanvasVisibility();
+
+    /* ===================== SCROLL REVEAL ===================== */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          if (en.target.classList.contains('skill-card')) {
+            const bar = en.target.querySelector('.skill-bar i');
+            if (bar) bar.style.width = en.target.dataset.level + '%';
+          }
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .hang-project, .project-row').forEach(el => io.observe(el));
+
+    // once a hanging project card finishes its swing-drop animation, hand control
+    // back to the live hover-tilt CSS vars so mouse/touch interaction still works
+    document.querySelectorAll('.hang-project').forEach(card => {
+      card.addEventListener('animationend', e => {
+        if (e.target === card) card.classList.add('landed');
+      });
+    });
+  </script>
+</body>
+
+</html>
