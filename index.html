@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Teja Deep // Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -1919,6 +1919,45 @@
     }
     .p-links a.achieve-link:hover, .p-links a.achieve-link:active { background: rgba(255,138,61,.18); border-color: var(--purple); }
     @media (max-width: 640px) { .p-links a.achieve-link { flex: 1 1 100%; justify-content: center; } }
+
+    /* ===== ROBUST PHONE FIT (v3) ===== */
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    img, video, canvas, svg { max-width: 100%; }
+    nav { max-width: 100vw; }
+
+    /* BUG FIX: the old <=760px rule left right-hand project cards stuck rotated and pushed off-screen.
+       This (higher specificity) rule makes every landed card sit straight and inside the screen. */
+    .hang-project.landed,
+    .hang-project.hang-right.landed {
+      transform: perspective(1200px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(var(--tz, 0px)) scale(var(--sc, 1));
+    }
+    #work { overflow-x: clip; }
+    .project-card > *, .p-info, .p-media { min-width: 0; }
+    .p-info h3, .p-info p { overflow-wrap: anywhere; }
+
+    @media (max-width: 900px) {
+      nav { top: calc(12px + env(safe-area-inset-top, 0px)); }
+      .hero { min-height: 100dvh; }
+    }
+    @media (max-width: 760px) {
+      section { padding-left: max(5vw, env(safe-area-inset-left, 0px)); padding-right: max(5vw, env(safe-area-inset-right, 0px)); }
+      .hang-project, .hang-project.hang-right { transform: translateY(-90px) rotate(0deg); }
+    }
+    @media (max-width: 640px) {
+      .contact-wrap h2 { font-size: clamp(26px, 8.5vw, 40px); overflow-wrap: anywhere; }
+      .sec-head h2 { font-size: clamp(26px, 8vw, 34px); }
+      .p-tags { gap: 6px; }
+      .tag { font-size: 10.5px; padding: 5px 10px; }
+      .hero-cta { width: min(82vw, 340px); bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+      .magnetic-btn { padding: 15px 20px; }
+      .code-block div { white-space: normal; overflow-wrap: anywhere; }
+      .code-block { -webkit-overflow-scrolling: touch; }
+    }
+    @media (max-width: 360px) {
+      .about-card p { font-size: 14px; }
+      .skill-card { padding: 16px 12px; }
+      .btn { padding: 14px 18px; font-size: 12.5px; }
+    }
     /* ===== /MOBILE-LAYOUT-PATCH ===== */
   </style>
 </head>
@@ -2133,7 +2172,7 @@
             <div class="p-info">
               <div class="p-index"><b>04</b>PROJECT</div>
               <h3>Kani's Studio — Boutique E-commerce</h3>
-              <p>An e-commerce platform for Kani's studio boutique. Customers browse collections,customer choose outfit from collection and add to cart and check out with UPI then receive an order confirmation email and can track their order. Admins publish collections and updates from a dedicated admin panel, backed by a JWT-secured Node/Express API and MongoDB.</p>
+              <p>An e-commerce platform for Kani's studio  boutique. Customers browse collections and add to cart and check out with UPI with using Razorpay, then receive an order confirmation email and can track their order. Admins publish collections and updates from a dedicated admin panel, backed by a JWT-secured Node/Express API and MongoDB.</p>
               <div class="p-tags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">MongoDB</span><span class="tag">JWT</span><span class="tag">Framer Motion</span></div>
               <div class="p-links"><a class="achieve-link" href="https://kanis-frontend.vercel.app/" target="_blank" rel="noopener">Visit live site ↗</a></div>
             </div>
