@@ -1909,6 +1909,16 @@
       .hero-cta { bottom: 20px; flex-direction: row; width: auto; }
       .sound-toggle { top: 70px; }
     }
+
+    /* ---- project links: big, always-on-top, easy to tap/click ---- */
+    .p-links { position: relative; z-index: 20; gap: 10px; margin-top: 18px; }
+    .p-links a.achieve-link {
+      position: relative; z-index: 21; cursor: pointer; pointer-events: auto; margin-top: 0;
+      padding: 11px 16px; min-height: 42px; border: 1px solid rgba(255,59,63,.45); border-radius: 10px;
+      background: rgba(255,59,63,.08); touch-action: manipulation;
+    }
+    .p-links a.achieve-link:hover, .p-links a.achieve-link:active { background: rgba(255,138,61,.18); border-color: var(--purple); }
+    @media (max-width: 640px) { .p-links a.achieve-link { flex: 1 1 100%; justify-content: center; } }
     /* ===== /MOBILE-LAYOUT-PATCH ===== */
   </style>
 </head>
@@ -2711,6 +2721,11 @@
       ul.addEventListener('click', e => { if (e.target.closest('a')) setOpen(false); });
       document.addEventListener('click', e => { if (!nav.contains(e.target)) setOpen(false); });
     })();
+  
+    /* project links: stop the card's tap-pop/tilt from stealing the click */
+    document.querySelectorAll('.p-links').forEach(box => {
+      ['touchstart', 'mousemove'].forEach(ev => box.addEventListener(ev, e => e.stopPropagation(), { passive: true }));
+    });
   </script>
 </body>
 
